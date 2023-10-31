@@ -1,6 +1,4 @@
-<script setup lang="js">
-  
-</script>
+<script setup lang="js"></script>
 
 <template>
   <div class="main">
@@ -20,14 +18,18 @@
 <style lang="less" scoped>
 .main {
   flex: 0 0 200px;
-  height: 100vh;
-  background: linear-gradient(to right, rgb(10,46,72), rgba(16, 44, 65, 0.733));
+  min-height: 100vh;
+  background: linear-gradient(
+    to right,
+    rgb(10, 46, 72),
+    rgba(16, 44, 65, 0.733)
+  );
   .main-title {
     height: 100px;
     width: 100%;
     font-size: 50px;
-    color: #4CAF50;
-    font-family: '华光中雅_CNKI', cursive;
+    color: #4caf50;
+    font-family: "华光中雅_CNKI", cursive;
     text-align: center;
   }
   .nav-wrapper {
@@ -40,15 +42,13 @@
       li {
         width: 100%;
         height: 80px;
-        line-height: 60px;
+        line-height: 80px;
         text-align: center;
         color: white;
         font-size: 25px;
-        font-family: '幼圆';
-        padding: 20px 30px;
+        font-family: "幼圆";
       }
     }
   }
 }
-  
 </style>

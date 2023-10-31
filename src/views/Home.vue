@@ -34,7 +34,7 @@ const init = async () => {
     oxygen_supply,
     feed,
     filed1,
-  }
+  };
 };
 onMounted(() => {
   // 展示当前时间
@@ -68,12 +68,18 @@ onMounted(() => {
     <!-- 鱼缸的详情信息 -->
     <div class="detail">
       <!-- 当前水温 -->
-      <div class="left" @click="goToManagePage">
+      <div
+        class="left"
+        @click="goToManagePage"
+      >
         <p style="font-size: 20px">当前水温</p>
         <p style="font-size: 40px">26℃</p>
         <p style="font-size: 20px">预定水温：</p>
       </div>
-      <div class="right" @click="goToManagePage">
+      <div
+        class="right"
+        @click="goToManagePage"
+      >
         <p style="font-size: 20px">水质状况</p>
         <p style="font-size: 40px">良好</p>
         <p style="font-size: 20px">自动换水：已关闭</p>
@@ -88,7 +94,11 @@ onMounted(() => {
           style="width: 30px; height: 30px"
         />
         <span class="show">已开启</span>
-        <span class="btn" @click="goToManagePage">设置灯光方案</span>
+        <span
+          class="btn"
+          @click="goToManagePage"
+          >设置灯光方案</span
+        >
       </div>
       <div class="set-item">
         <img
@@ -97,7 +107,11 @@ onMounted(() => {
           style="width: 30px; height: 30px"
         />
         <span class="show">已关闭</span>
-        <span class="btn" @click="goToManagePage">设置供氧方案</span>
+        <span
+          class="btn"
+          @click="goToManagePage"
+          >设置供氧方案</span
+        >
       </div>
       <div class="set-item">
         <img
@@ -106,7 +120,11 @@ onMounted(() => {
           style="width: 30px; height: 30px"
         />
         <span class="show">已开启</span>
-        <span class="btn" @click="goToManagePage">设置投喂方案</span>
+        <span
+          class="btn"
+          @click="goToManagePage"
+          >设置投喂方案</span
+        >
       </div>
     </div>
   </div>
