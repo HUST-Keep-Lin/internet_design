@@ -2,7 +2,6 @@
 import dayjs from "dayjs";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { login } from "../utils/api/admin";
 import { getCurrent } from "../utils/api/main";
 
 const curDay = ref("");
@@ -38,6 +37,10 @@ const init = async () => {
 };
 onMounted(() => {
   // 展示当前时间
+  const date = dayjs(new Date());
+  curDay.value = date.format("YYYY-MM-DD");
+  curTime.value = date.format("HH:mm:ss");
+
   let timer = setInterval(() => {
     const date = dayjs(new Date());
     curDay.value = date.format("YYYY-MM-DD");
@@ -202,6 +205,16 @@ onMounted(() => {
         border-radius: 8px;
         padding-left: 10px;
         padding-right: 10px;
+        box-shadow: 0px 5px 0px 0px rgb(0, 102, 204);
+        transition: all 0.2s;
+        cursor: pointer;
+        &:hover {
+          background: #66b2ff;
+        }
+        &:active {
+          transform: translate(0, 4px);
+          box-shadow: 0px 0px 0px 0px rgb(0, 102, 204);
+        }
       }
     }
   }

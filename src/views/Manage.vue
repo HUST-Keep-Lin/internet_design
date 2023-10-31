@@ -242,8 +242,7 @@ const feed_amount = ref(20)
   justify-content: space-around;
   .item {
     width: 45%;
-    height: 200px;
-    font-size: 20px;
+    font-size: 16px;
     padding: 10px;
     margin: 10px;
     background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
