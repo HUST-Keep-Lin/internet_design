@@ -6,7 +6,17 @@ import { getCurrent } from "../utils/api/main";
 
 const curDay = ref("");
 const curTime = ref("");
-const data = ref(null);
+const data = ref({
+  id: true,
+  time: '',
+  current_temperature: 0,
+  target_temperature: 0,
+  water_quality: 123,
+  automatic_water_change: true,
+  oxygen_supply: true,
+  feed: true,
+  light: false
+});
 const router = useRouter();
 
 const goToManagePage = () => {
@@ -16,26 +26,14 @@ const goToManagePage = () => {
 // 界面初始化函数
 const init = async () => {
   const res = await getCurrent();
-  const {
-    current_temperature,
-    water_quality,
-    automatic_water_change,
-    target_temperature,
-    oxygen_supply,
-    feed,
-    filed1,
-  } = res.data;
-  data.value = {
-    current_temperature,
-    water_quality,
-    automatic_water_change,
-    target_temperature,
-    oxygen_supply,
-    feed,
-    filed1,
-  };
+  data.value = res.data.body[0]
+  // data.value.id = res.data.body[0].id
+  // data.value.time = res.data.body[0].time
+  // data.value.current_temperature = res.data.body[0].current_temperature
+  // data.value.target_temperature = res.data.body.target_temperature
+  // console.log(data.value);  
 };
-onMounted(() => {
+onMounted(async () => {
   // 展示当前时间
   const date = dayjs(new Date());
   curDay.value = date.format("YYYY-MM-DD");
@@ -46,7 +44,8 @@ onMounted(() => {
     curDay.value = date.format("YYYY-MM-DD");
     curTime.value = date.format("HH:mm:ss");
   }, 1000);
-  init();
+  await init();
+  console.log(data);
 });
 </script>
 
@@ -76,16 +75,16 @@ onMounted(() => {
         @click="goToManagePage"
       >
         <p style="font-size: 20px">当前水温</p>
-        <p style="font-size: 40px">26℃</p>
-        <p style="font-size: 20px">预定水温：</p>
+        <p style="font-size: 40px">{{ data.current_temperature }}</p>
+        <p style="font-size: 20px">预定水温：{{ data.target_temperature }}</p>
       </div>
       <div
         class="right"
         @click="goToManagePage"
       >
         <p style="font-size: 20px">水质状况</p>
-        <p style="font-size: 40px">良好</p>
-        <p style="font-size: 20px">自动换水：已关闭</p>
+        <p style="font-size: 40px">{{ data.water_quality }}</p>
+        <p style="font-size: 20px">自动换水：{{ data.automatic_water_change?'已开启':'已关闭' }}</p>
       </div>
     </div>
     <!-- 设置信息 -->
@@ -96,7 +95,7 @@ onMounted(() => {
           alt="灯光"
           style="width: 30px; height: 30px"
         />
-        <span class="show">已开启</span>
+        <span class="show">{{ data.light?'已开启':'已关闭' }}</span>
         <span
           class="btn"
           @click="goToManagePage"
@@ -109,7 +108,7 @@ onMounted(() => {
           alt="氧气"
           style="width: 30px; height: 30px"
         />
-        <span class="show">已关闭</span>
+        <span class="show">{{ data.oxygen_supply?'已开启':'已关闭' }}</span>
         <span
           class="btn"
           @click="goToManagePage"
@@ -122,7 +121,7 @@ onMounted(() => {
           alt="投喂"
           style="width: 30px; height: 30px"
         />
-        <span class="show">已开启</span>
+        <span class="show">{{ data.feed?'已开启':'已关闭' }}</span>
         <span
           class="btn"
           @click="goToManagePage"
