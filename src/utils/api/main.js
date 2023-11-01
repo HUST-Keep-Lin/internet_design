@@ -7,12 +7,22 @@ export const getCurrent = () => {
   })
 }
 
-export const getHistory = (start) => {
+export const getHistoryTemp = (date) => {
   return service({
     method: 'GET',
-    url: '/main/history',
+    url: '/main/history/temperature',
     params: {
-      start
+      date
     }
   })
+}
+
+export const getHistoryWater = (date) => {
+  return service({
+    method: 'GET',
+    url: '/main/history/water',
+    params: {
+      date
+    }
+})
 }
