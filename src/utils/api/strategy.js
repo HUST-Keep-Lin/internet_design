@@ -54,12 +54,8 @@ export const changeWater = (water_mode, threshold_value, water_change_interval) 
   const params = {
     water_mode
   }
-  if(threshold_value){
-    params.threshold_value = threshold_value
-  }
-  if(water_change_interval){
-    params.water_change_interval = water_change_interval
-  }
+  params.threshold_value = threshold_value
+  params.water_change_interval = water_change_interval
   console.log('修改换水策略', params);
 
   return service({

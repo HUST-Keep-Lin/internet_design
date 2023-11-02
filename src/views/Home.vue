@@ -27,11 +27,6 @@ const goToManagePage = () => {
 const init = async () => {
   const res = await getCurrent();
   data.value = res.data.body[0]
-  // data.value.id = res.data.body[0].id
-  // data.value.time = res.data.body[0].time
-  // data.value.current_temperature = res.data.body[0].current_temperature
-  // data.value.target_temperature = res.data.body.target_temperature
-  // console.log(data.value);  
 };
 onMounted(async () => {
   // 展示当前时间
