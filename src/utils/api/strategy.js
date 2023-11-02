@@ -2,15 +2,18 @@ import service from "..";
 
 // 新增或修改灯光策略
 export const changeLight = (light_mode, start_time, end_time) => {
+  // console.log(start_time.getHours());
   const params = {
     light_mode
   }
   if(start_time){
     params.start_time = start_time
+    console.log(start_time.getHours());
   }
   if(end_time){
     params.end_time = end_time
   }
+  console.log('灯光策略', params);
   return service({
     method: 'POST',
     url: '/strategy/light',
@@ -26,10 +29,11 @@ export const getLight = () => {
   })
 }
 
-//供氧策略
+//供氧策略 done
 export const putOxygen = (start_oxygen_supply) => {
+  console.log('供氧策略,是否开启供氧', start_oxygen_supply);
   return service({
-    method: 'PUT',
+    method: 'POST',
     url: '/strategy/oxygen',
     params: {
       start_oxygen_supply
@@ -37,12 +41,15 @@ export const putOxygen = (start_oxygen_supply) => {
   })
 }
 
-//新增或修改换水策略
-/*
-  water_mode 1 Number
-  threshold_value 0 Number
-  water_change_interval 0 Number
-*/
+//查询供氧策略
+export const getOxygen = () => {
+  return service({
+    method: 'GET',
+    url: '/strategy/oxygen',
+  })
+}
+
+//新增或修改换水策略 done
 export const changeWater = (water_mode, threshold_value, water_change_interval) => {
   const params = {
     water_mode
@@ -53,11 +60,19 @@ export const changeWater = (water_mode, threshold_value, water_change_interval) 
   if(water_change_interval){
     params.water_change_interval = water_change_interval
   }
+  console.log('修改换水策略', params);
 
   return service({
     method: 'POST',
     url: '/strategy/water',
     params
+  })
+}
+//查询换水策略
+export const getWater = () => {
+  return service({
+    method: 'GET',
+    url: '/strategy/water'
   })
 }
 
@@ -75,6 +90,7 @@ export const changeTemperature = (temperature_mode, target_temperature, start_ti
   if(end_time){
     params.end_time = end_time
   }
+  console.log('智能温控', params);
 
   return service({
     method: 'POST',
