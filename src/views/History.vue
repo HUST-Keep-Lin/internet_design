@@ -228,7 +228,7 @@ watch(
     margin-right: 20px;
     :deep(.el-input) {
       height: 58px;
-      width: 122px;
+      width: 129px;
       color: white;
       --el-input-border: 0px;
       --el-input-border-color: transparent;
@@ -247,5 +247,8 @@ watch(
       }
     }
   }
+}
+.el-select-dropdown__item.selected {
+  --el-color-primary: #4caf50;
 }
 </style>
