@@ -47,7 +47,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from "vue";
-
+import { getHistoryData } from "@/utils/api/history.js";
 const value = ref("");
 const time = ref("");
 const parameter = [
@@ -56,7 +56,7 @@ const parameter = [
     label: "温度",
   },
   {
-    value: "waterQuality",
+    value: "water",
     label: "水质",
   },
   {
@@ -209,11 +209,18 @@ onMounted(() => {
   ];
   drawCanvas(points);
 });
+const draw = async () => {
+  const newTime =
+    time.value < 10 ? `2023-11-0${time.value}` : `2023-11-${time.value}`; // 权宜之计
+  const res = await getHistoryData(value.value, newTime);
+  console.log(res);
+};
 watch(
   () => [value.value, time.value],
   () => {
     if (value.value && time.value) {
       console.log("发起请求，调用'drawCanvas'");
+      draw();
     }
   }
 );
