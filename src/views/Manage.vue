@@ -1,7 +1,7 @@
-<script setup lang="js">
-import { ref, onMounted, onUpdated } from 'vue'
-import { changeTemperature, changeWater, changeLight, putOxygen, getLight, getOxygen, getWater } from '../utils/api/strategy'
-import { getSwitch } from '../utils/api/main'
+<script setup>
+import { ref, onMounted, onUpdated,onBeforeMount } from 'vue'
+import { changeTemperature, changeWater, changeLight, getLight, getWater } from '../utils/api/strategy'
+import { getSwitch, getCurrent } from '../utils/api/main'
 
 
 const temp_mode = ref(0) //温控模式 0为环境温模式 1为恒温模式
@@ -22,9 +22,9 @@ const changeTemp = async () => {
 }
 
 //水质策略
-const water_mode = ref(0)  //0代表浊度阈值，1代表间隔换水阈值
-const threshold_value = ref(10) //水浊度
-const water_change_interval = ref(0) //换水周期
+const water_mode = ref(null)  //0代表浊度阈值，1代表间隔换水阈值
+const threshold_value = ref(null) //水浊度
+const water_change_interval = ref(null) //换水周期
 // 换水周期选项
 const waterChangeOptions = [
   {
@@ -73,22 +73,26 @@ const init = async () => {
   start_time.value = data.start_time
   end_time.value = data.end_time
 
-  res = await getOxygen()
+  res = await getCurrent()
   data = res.data.body[0]
   console.log('data', data);
-  start_oxygen_supply.value  =data.start_oxygen_supply
+  if(data.oxygen_supply) start_oxygen_supply.value =  1
+  else start_oxygen_supply.value = 0
 
   res = await getWater()
   data = res.data.body[0]
-
+  water_mode.value = data.water_mode
+  threshold_value.value = data.threshold_value
+  water_change_interval.value = data.water_change_interval
 };
 
-onMounted(async () => {
+onBeforeMount(async () => {
   await init()
+  console.log('Mounted结束');
 })
-onUpdated(() => {
-  console.log('Updated');
-})
+// onUpdated(() => {
+//   console.log('Updated');
+// })
 </script>
 
 <template>
@@ -136,8 +140,8 @@ onUpdated(() => {
           v-model="water_mode"
           active-text="间隔时间换水"
           inactive-text="浊度换水"
-          active-value="1"
-          inactive-value="0"
+          :active-value=1
+          :inactive-value=0
           @change="
             () => {
               changeWater(water_mode, threshold_value, water_change_interval);
@@ -184,15 +188,16 @@ onUpdated(() => {
         v-model="start_oxygen_supply"
         active-text="开启供氧"
         inactive-text="关闭供氧"
-        active-value=1
-        inactive-value=0
+        :active-value=1
+        :inactive-value=0
         @change="
           () => {
-            putOxygen(start_oxygen_supply);
-            if(start_oxygen_supply === '1'){
-              getSwitch(oxygen=true)
+            if(start_oxygen_supply === 1){
+              getSwitch(undefined,true,undefined,undefined)
               console.log('start_oxygen_supply=', start_oxygen_supply);
               console.log(111111);
+            }else{
+              getSwitch(undefined,false, undefined, undefined)
             }
           }
         "

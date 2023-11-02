@@ -29,18 +29,12 @@ export const getHistoryWater = (date) => {
 
 export const getSwitch = (automatic_water_change, oxygen_supply, feed, light) => {
   const params = {}
-  if(automatic_water_change){
-    params.automatic_water_change = automatic_water_change
-  }
-  if(oxygen_supply){
-    params.oxygen_supply = oxygen_supply
-  }
-  if(feed){
-    params.feed = feed
-  }
-  if(light){
-    params.light = light
-  }
+  params.automatic_water_change = automatic_water_change
+  params.oxygen_supply = oxygen_supply
+  params.feed = feed
+  params.light = light
+
+  console.log('params', params);
   return service({
     method: 'POST',
     url: '/main/switches',
