@@ -39,7 +39,7 @@
       <canvas
         id="cvs"
         width="850"
-        height="600"
+        height="500"
       ></canvas>
     </div>
   </div>
@@ -66,6 +66,8 @@ const parameter = [
 ];
 const drawCanvas = (points) => {
   const cvs = document.getElementById("cvs");
+  cvs.width = cvs.width;
+  cvs.height = cvs.height;
   const ctx = cvs.getContext("2d");
 
   // 坐标轴距离画布上右下左的边距
@@ -214,6 +216,15 @@ const draw = async () => {
     time.value < 10 ? `2023-11-0${time.value}` : `2023-11-${time.value}`; // 权宜之计
   const res = await getHistoryData(value.value, newTime);
   console.log(res);
+  const points = [
+    [1, 11],
+    [5, 15],
+    [9, 24],
+    [13, 3],
+    [17, 7],
+    [20, 44],
+  ];
+  drawCanvas(points);
 };
 watch(
   () => [value.value, time.value],
