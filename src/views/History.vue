@@ -120,8 +120,13 @@ const drawCanvas = (points) => {
   ctx.fill();
   ctx.font = "14px Arial";
   ctx.textAlign = "center";
+  const yText = {
+    temperature: "℃",
+    water: "水质",
+    lighting: "Lux",
+  };
   ctx.fillText(
-    "℃",
+    yText[value.value],
     vertexTop.x - arrow.width / 2 - 15,
     vertexTop.y + arrow.height
   );
@@ -200,30 +205,22 @@ const drawCanvas = (points) => {
     ctx.fillText((y / 10).toString(), origin.x - 10, origin.y - y + 5);
   }
 };
-onMounted(() => {
-  const points = [
-    [1, 10],
-    [5, 5],
-    [9, 34],
-    [13, 13],
-    [17, 17],
-    [20, 24],
-  ];
-  drawCanvas(points);
-});
 const draw = async () => {
   const newTime =
     time.value < 10 ? `2023-11-0${time.value}` : `2023-11-${time.value}`; // 权宜之计
   const res = await getHistoryData(value.value, newTime);
-  console.log(res);
-  const points = [
-    [1, 11],
-    [5, 15],
-    [9, 24],
-    [13, 3],
-    [17, 7],
-    [20, 44],
-  ];
+  console.log(res.data.body);
+  const key =
+    value.value === "temperature" ? "current_temperature" : "water_quality";
+  const conversionTime = (time) => {
+    const [h, m, s] = time.split(":");
+    return (+h + +m / 60).toFixed(2);
+  };
+  const points = res.data.body.map((item) => {
+    const x = conversionTime(item.time);
+    const y = item[key];
+    return [x, y];
+  });
   drawCanvas(points);
 };
 watch(
