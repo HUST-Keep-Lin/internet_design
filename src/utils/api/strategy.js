@@ -95,6 +95,12 @@ export const changeTemperature = (temperature_mode, target_temperature, start_ti
   })
 
 }
+export const getTemperature = () => {
+  return service({
+    method: 'GET',
+    url: '/strategy/temperature',
+  })
+}
 
 //新增或修改喂食策略
 export const changeFeed = (feed_time, amount) => {

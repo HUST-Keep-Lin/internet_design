@@ -1,8 +1,13 @@
 <script setup>
-import { ref, onMounted, onUpdated,onBeforeMount } from 'vue'
-import { changeTemperature, changeWater, changeLight, getLight, getWater } from '../utils/api/strategy'
+import { ref, onMounted, onBeforeMount } from 'vue'
+import { changeTemperature, changeWater, changeLight, getLight, getWater, getTemperature } from '../utils/api/strategy'
 import { getSwitch, getCurrent } from '../utils/api/main'
 
+//表示是否已经加载完
+const loading = ref(true);
+
+//当前温度
+const current_temperature = ref(null)
 
 const temp_mode = ref(0) //温控模式 0为环境温模式 1为恒温模式
 // 温控参数  目标温度、开始时间、结束时间
@@ -11,8 +16,8 @@ const timeRange = ref([
   new Date(2016, 9, 10, 8, 40),
   new Date(2016, 9, 10, 9, 40),
 ])
-const start_time = ref('')
-const end_time = ref('')
+const start_time = ref('20:00:00')
+const end_time = ref('06:00:00')
 
 //改变温度策略
 const changeTemp = async () => {
@@ -22,7 +27,7 @@ const changeTemp = async () => {
 }
 
 //水质策略
-const water_mode = ref(null)  //0代表浊度阈值，1代表间隔换水阈值
+const water_mode = ref(0)  //0代表浊度阈值，1代表间隔换水阈值
 const threshold_value = ref(null) //水浊度
 const water_change_interval = ref(null) //换水周期
 // 换水周期选项
@@ -47,8 +52,8 @@ const waterChangeOptions = [
 
 //灯光策略
 const light_mode = ref(1) //灯光模式 0 固定时间开关灯， 1代表自动开关灯
-const time_value1 = ref(null)
-const time_value2 = ref(null)
+const time_value1 = ref(new Date(2023, 10, 11, 20, 0, 0))
+const time_value2 = ref(new Date(2023, 10, 12, 6, 0, 0))
 const light_start_time = ref('')
 const light_end_time = ref('')
 // 格式化时间
@@ -58,54 +63,74 @@ const formatStartTime = (time) => {
 const formatEndTime = (time) => {
   light_end_time.value = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds()
 }
-//供养策略
+//供氧策略
 const start_oxygen_supply = ref(1) //true为开启供氧，false为关闭
 
 //投喂策略
 const feed_time = ref('')
 const feed_amount = ref(20)
 
+//时间格式转换
+const parseTimeString = (timeString) => {
+  const parts = timeString.split(':');
+  const hours = parseInt(parts[0], 10);
+  const minutes = parseInt(parts[1], 10);
+  
+  const date = new Date();
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  
+  return date;
+}
+
 // 界面初始化函数
 const init = async () => {
+  // 灯光
   let res = await getLight()
   let data = res.data.body[0]
   light_mode.value = data.light_mode
-  start_time.value = data.start_time
-  end_time.value = data.end_time
-
+  // start_time.value = data.start_time
+  // end_time.value = data.end_time
+  //氧气
   res = await getCurrent()
   data = res.data.body[0]
-  console.log('data', data);
+  current_temperature.value = data.current_temperature
   if(data.oxygen_supply) start_oxygen_supply.value =  1
   else start_oxygen_supply.value = 0
-
+  //水质
   res = await getWater()
   data = res.data.body[0]
   water_mode.value = data.water_mode
   threshold_value.value = data.threshold_value
   water_change_interval.value = data.water_change_interval
+  //温控
+  res = await getTemperature()
+  data = res.data.body[0]
+  temp_mode.value = data.temperature_mode
+  target_temperature.value = data.target_temperature
+  start_time.value = data.start_time
+  end_time.value = data.end_time
+  timeRange.value[0] = parseTimeString(start_time.value)
+  timeRange.value[1] = parseTimeString(end_time.value)
 };
 
 onBeforeMount(async () => {
   await init()
-  console.log('Mounted结束');
+  loading.value = false
 })
-// onUpdated(() => {
-//   console.log('Updated');
-// })
 </script>
 
 <template>
   <div class="manage">
-    <div class="temperature item">
+    <div class="temperature item" v-loading="loading">
       <div class="control">
         <span class="title">智能温控</span><br />
         <el-switch
           v-model="temp_mode"
           active-text="恒温模式"
           inactive-text="环境温模式"
-          active-value="1"
-          inactive-value="0"
+          :active-value=1
+          :inactive-value=0
           @change="
             () => {
               changeTemp(temp_mode);
@@ -130,10 +155,10 @@ onBeforeMount(async () => {
         </el-form>
       </div>
       <div class="current">
-        <span>当前温度：{{ 1 }}</span>
+        <span>当前温度：{{ current_temperature }}</span>
       </div>
     </div>
-    <div class="water item">
+    <div class="water item" v-loading="loading">
       <div class="water_mode">
         <span class="title">换水模式</span> <br />
         <el-switch
@@ -182,7 +207,7 @@ onBeforeMount(async () => {
         启用该设置模式
       </div>
     </div>
-    <div class="oxygen item">
+    <div class="oxygen item" v-loading="loading">
       <span class="title">智能供氧</span> <br />
       <el-switch
         v-model="start_oxygen_supply"
@@ -194,8 +219,6 @@ onBeforeMount(async () => {
           () => {
             if(start_oxygen_supply === 1){
               getSwitch(undefined,true,undefined,undefined)
-              console.log('start_oxygen_supply=', start_oxygen_supply);
-              console.log(111111);
             }else{
               getSwitch(undefined,false, undefined, undefined)
             }
@@ -203,7 +226,7 @@ onBeforeMount(async () => {
         "
       />
     </div>
-    <div class="light item">
+    <div class="light item" v-loading="loading">
       <div class="light_mode">
         <span class="title">智能灯光</span>
         <br />
@@ -211,8 +234,8 @@ onBeforeMount(async () => {
           v-model="light_mode"
           active-text="自动开关灯"
           inactive-text="固定时间开关灯"
-          active-value="1"
-          inactive-value="0"
+          :active-value=1
+          :inactive-value=0
           @change="
             () => {
               changeLight(light_mode, light_start_time, light_end_time);
@@ -235,7 +258,7 @@ onBeforeMount(async () => {
         </div>
       </div>
     </div>
-    <div class="feed item">
+    <div class="feed item" v-loading="loading">
       <div class="feed_mode">
         <span class="title">投喂策略：</span>
         <br />
