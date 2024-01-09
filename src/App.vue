@@ -1,14 +1,9 @@
 <script setup>
-import { RouterView } from "vue-router";
-import MyNav from "./components/MyNav.vue";
 </script>
 
 <template>
   <div class="wrapper">
-    <MyNav />
-    <div class="content">
-      <RouterView />
-    </div>
+    <router-view />
   </div>
 </template>
 

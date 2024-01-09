@@ -258,12 +258,12 @@ onBeforeMount(async () => {
         </div>
       </div>
     </div>
-    <div class="feed item" v-loading="loading">
+    <!-- <div class="feed item" v-loading="loading">
       <div class="feed_mode">
         <span class="title">投喂策略：</span>
         <br />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

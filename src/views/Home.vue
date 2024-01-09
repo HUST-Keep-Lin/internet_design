@@ -20,7 +20,7 @@ const data = ref({
 const router = useRouter();
 
 const goToManagePage = () => {
-  router.push("/manage");
+  router.push("/user/manage");
 };
 
 // 界面初始化函数

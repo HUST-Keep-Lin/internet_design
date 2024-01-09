@@ -24,7 +24,7 @@ export const getHistoryWater = (date) => {
     params: {
       date
     }
-})
+  })
 }
 
 export const getSwitch = (automatic_water_change, oxygen_supply, feed, light) => {
@@ -39,5 +39,5 @@ export const getSwitch = (automatic_water_change, oxygen_supply, feed, light) =>
     method: 'POST',
     url: '/main/switches',
     params
-})
+  })
 }
